@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+
+using STUDY.CodingTracker.Models;
 using STUDY.CodingTracker.Configuration;
 
 IConfiguration config = new ConfigurationBuilder()
@@ -11,4 +13,12 @@ var databaseSettings = config.GetSection("DatabaseSettings");
 
 Configuration myConfig = new Configuration();
 databaseSettings.Bind(myConfig);
-Console.WriteLine(myConfig.ConnectionString + myConfig.DatabasePath);
+Console.WriteLine($"Connection string: {myConfig.ConnectionString + myConfig.DatabasePath}");
+
+DateTime startTime;
+DateTime endTime;
+
+DateTime.TryParse("01:12:27", out startTime);
+DateTime.TryParse("02:57:46", out endTime);
+CodingSessionModel codingSessionTest = new(startTime, endTime);
+Console.WriteLine($"Time test: {codingSessionTest.duration}");
