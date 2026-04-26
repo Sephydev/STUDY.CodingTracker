@@ -11,4 +11,4 @@ var databaseSettings = config.GetSection("DatabaseSettings");
 
 Configuration myConfig = new Configuration();
 databaseSettings.Bind(myConfig);
-Console.WriteLine(myConfig.connectionString + myConfig.databasePath);
+Console.WriteLine(myConfig.ConnectionString + myConfig.DatabasePath);
