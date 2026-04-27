@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using STUDY.CodingTracker.Models;
 
 namespace STUDY.CodingTracker.Controllers;
 
@@ -23,6 +23,17 @@ internal class CodingSessionController
 
     // Add
 
+    public void AddCodingSession(CodingSessionModel codingSession)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        connection.Open();
+
+        string sql = "INSERT INTO codingSessions (STARTTIME, ENDTIME, DURATION) VALUES (@StartTime, @EndTime, @Duration)";
+        var parameters = new { @StartTime = codingSession.startTime, @EndTime = codingSession.endTime, @Duration = codingSession.duration };
+        connection.Execute(sql, parameters);
+    }
+
     // Delete
 
     // Update
@@ -33,7 +44,7 @@ internal class CodingSessionController
 
         connection.Open();
 
-        var codingSessionTable = connection.Execute(
+        connection.Execute(
             @"CREATE TABLE IF NOT EXISTS codingSessions(
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             STARTTIME TEXT,

@@ -17,3 +17,4 @@ CodingSessionModel codingSessionTest = new(startTime, endTime);
 Console.WriteLine($"Time test: {codingSessionTest.duration}");
 
 CodingSessionController codingSessionController = new(config);
+codingSessionController.AddCodingSession(codingSessionTest);
