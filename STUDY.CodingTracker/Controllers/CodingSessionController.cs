@@ -21,6 +21,17 @@ internal class CodingSessionController
 
     // View
 
+    public List<CodingSessionModel> GetCodingSessions()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        connection.Open();
+
+        var codingSessions = connection.Query<CodingSessionModel>("SELECT ID id, STARTTIME startTime, ENDTIME endTime FROM codingSessions").AsList();
+
+        return codingSessions;
+    }
+
     // Add
 
     public void AddCodingSession(CodingSessionModel codingSession)
@@ -30,7 +41,7 @@ internal class CodingSessionController
         connection.Open();
 
         string sql = "INSERT INTO codingSessions (STARTTIME, ENDTIME, DURATION) VALUES (@StartTime, @EndTime, @Duration)";
-        var parameters = new { @StartTime = codingSession.startTime, @EndTime = codingSession.endTime, @Duration = codingSession.duration };
+        var parameters = new { @StartTime = codingSession._startTime, @EndTime = codingSession._endTime, @Duration = codingSession._duration };
         connection.Execute(sql, parameters);
     }
 

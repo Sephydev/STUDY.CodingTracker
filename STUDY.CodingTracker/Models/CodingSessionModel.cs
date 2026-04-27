@@ -2,16 +2,24 @@
 
 internal class CodingSessionModel
 {
-    public int id { get; set; }
-    public DateTime startTime { get; set; }
-    public DateTime endTime { get; set; }
-    public TimeSpan duration { get; }
+    public int _id { get; set; }
+    public DateTime _startTime { get; set; }
+    public DateTime _endTime { get; set; }
+    public TimeSpan _duration { get; }
 
-    public CodingSessionModel(DateTime start, DateTime end)
+    public CodingSessionModel (Int64 id, string startTime, string endTime)
     {
-        startTime = start;
-        endTime = end;
+        _id = (int)id;
 
-        duration = endTime.Subtract(startTime);
+        DateTime temp;
+
+        DateTime.TryParse(startTime, out temp);
+        _startTime = temp;
+
+        DateTime.TryParse(endTime, out temp);
+        _endTime = temp;
+
+        _duration = _endTime.Subtract(_startTime);
     }
+
 }
