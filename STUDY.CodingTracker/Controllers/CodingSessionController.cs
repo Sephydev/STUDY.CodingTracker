@@ -60,6 +60,20 @@ internal class CodingSessionController
 
     // Update
 
+    public int UpdateCodingSession(int idToUpdate, CodingSessionModel updatedCodingSession)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        connection.Open();
+
+        string sql = "UPDATE codingSessions SET STARTTIME = @StartTime, ENDTIME = @EndTime, DURATION = @Duration WHERE ID = @IdToUpdate";
+        var parameters = new { @StartTime = updatedCodingSession._startTime, @EndTime = updatedCodingSession._endTime, @Duration = updatedCodingSession._duration, @IdToUpdate = idToUpdate };
+
+        int numberOfRows = connection.Execute(sql, parameters);
+
+        return numberOfRows;
+    }
+
     private void CreateTable()
     {
         using var connection = new SqliteConnection(_connectionString);

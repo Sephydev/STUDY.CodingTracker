@@ -26,3 +26,8 @@ foreach(var codingSession in codingSessionController.GetCodingSessions())
 
 int numberOfRows = codingSessionController.DeleteCodingSession(3);
 Console.WriteLine($"Number of rows deleted = {numberOfRows}");
+
+CodingSessionModel codingSessionTest2 = new(0, "16:12:42", "18:25:58");
+
+int updateNumberOfRows = codingSessionController.UpdateCodingSession(4, codingSessionTest2);
+Console.WriteLine("Updated number of rows: " + updateNumberOfRows);
