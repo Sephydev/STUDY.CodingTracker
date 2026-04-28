@@ -23,11 +23,20 @@ internal class CodingSessionController
 
     public List<CodingSessionModel> GetCodingSessions()
     {
-        using var connection = new SqliteConnection(_connectionString);
+        List<CodingSessionModel> codingSessions = new();
 
-        connection.Open();
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
 
-        var codingSessions = connection.Query<CodingSessionModel>("SELECT STARTTIME start, ENDTIME end, ID newId, DURATION newDuration FROM codingSessions").AsList();
+            connection.Open();
+
+            codingSessions = connection.Query<CodingSessionModel>("SELECT STARTTIME start, ENDTIME end, ID newId, DURATION newDuration FROM codingSessions").AsList();
+        }
+        catch (SqliteException e)
+        {
+            DBErrorMessage("getting the saved coding sessions", e.Message);
+        }
 
         return codingSessions;
     }
@@ -36,57 +45,93 @@ internal class CodingSessionController
 
     public void AddCodingSession(CodingSessionModel codingSession)
     {
-        using var connection = new SqliteConnection(_connectionString);
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
 
-        connection.Open();
+            connection.Open();
 
-        string sql = "INSERT INTO codingSessions (STARTTIME, ENDTIME, DURATION) VALUES (@StartTime, @EndTime, @Duration)";
-        var parameters = new { @StartTime = codingSession.startTime, @EndTime = codingSession.endTime, @Duration = codingSession.duration };
-        connection.Execute(sql, parameters);
+            string sql = "INSERT INTO codingSessions (STARTTIME, ENDTIME, DURATION) VALUES (@StartTime, @EndTime, @Duration)";
+            var parameters = new { @StartTime = codingSession.startTime, @EndTime = codingSession.endTime, @Duration = codingSession.duration };
+            connection.Execute(sql, parameters);
+        }
+        catch (SqliteException e)
+        {
+            DBErrorMessage("adding the coding session", e.Message);
+        }
     }
 
     // Delete
 
     public int DeleteCodingSession(int idToDelete)
     {
-        using var connection = new SqliteConnection(_connectionString);
+        int numberOfRowsDeleted = 0;
 
-        connection.Open();
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
 
-        int numberOfRows = connection.Execute("DELETE FROM codingSessions WHERE ID = @IdToDelete", new { @IdToDelete = idToDelete });
+            connection.Open();
 
-        return numberOfRows;
+            numberOfRowsDeleted = connection.Execute("DELETE FROM codingSessions WHERE ID = @IdToDelete", new { @IdToDelete = idToDelete });
+        }
+        catch(SqliteException e)
+        {
+            DBErrorMessage("deleting the coding session", e.Message);
+        }
+        return numberOfRowsDeleted;
     }
 
     // Update
 
     public int UpdateCodingSession(int idToUpdate, CodingSessionModel updatedCodingSession)
     {
-        using var connection = new SqliteConnection(_connectionString);
+        int numberOfRowsUpdated = 0;
 
-        connection.Open();
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
 
-        string sql = "UPDATE codingSessions SET STARTTIME = @StartTime, ENDTIME = @EndTime, DURATION = @Duration WHERE ID = @IdToUpdate";
-        var parameters = new { @StartTime = updatedCodingSession.startTime, @EndTime = updatedCodingSession.endTime, @Duration = updatedCodingSession.duration, @IdToUpdate = idToUpdate };
+            connection.Open();
 
-        int numberOfRows = connection.Execute(sql, parameters);
+            string sql = "UPDATE codingSessions SET STARTTIME = @StartTime, ENDTIME = @EndTime, DURATION = @Duration WHERE ID = @IdToUpdate";
+            var parameters = new { @StartTime = updatedCodingSession.startTime, @EndTime = updatedCodingSession.endTime, @Duration = updatedCodingSession.duration, @IdToUpdate = idToUpdate };
 
-        return numberOfRows;
+            numberOfRowsUpdated = connection.Execute(sql, parameters);
+        }
+        catch (SqliteException e)
+        {
+            DBErrorMessage("updating the coding session", e.Message);
+        }
+
+        return numberOfRowsUpdated;
     }
 
     private void CreateTable()
     {
-        using var connection = new SqliteConnection(_connectionString);
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
 
-        connection.Open();
+            connection.Open();
 
-        connection.Execute(
-            @"CREATE TABLE IF NOT EXISTS codingSessions(
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            STARTTIME TEXT,
-            ENDTIME TEXT,
-            DURATION TEXT
+            connection.Execute(
+                @"CREATE TABLE IF NOT EXISTS codingSessions(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                STARTTIME TEXT,
+                ENDTIME TEXT,
+                DURATION TEXT
             )"
-        );
+            );
+        }
+        catch (SqliteException e)
+        {
+            DBErrorMessage("creating the DB Table", e.Message);
+        }
+    }
+
+    private void DBErrorMessage(string action, string errorMessage)
+    {
+        Console.WriteLine($"An error occured while {action}. Error: {errorMessage}");
     }
 }
