@@ -19,8 +19,6 @@ internal class CodingSessionController
         CreateTable();
     }
 
-    // View
-
     public List<CodingSessionModel> GetCodingSessions()
     {
         List<CodingSessionModel> codingSessions = new();
@@ -41,8 +39,6 @@ internal class CodingSessionController
         return codingSessions;
     }
 
-    // Add
-
     public void AddCodingSession(CodingSessionModel codingSession)
     {
         try
@@ -60,8 +56,6 @@ internal class CodingSessionController
             DBErrorMessage("adding the coding session", e.Message);
         }
     }
-
-    // Delete
 
     public int DeleteCodingSession(int idToDelete)
     {
@@ -81,8 +75,6 @@ internal class CodingSessionController
         }
         return numberOfRowsDeleted;
     }
-
-    // Update
 
     public int UpdateCodingSession(int idToUpdate, CodingSessionModel updatedCodingSession)
     {
