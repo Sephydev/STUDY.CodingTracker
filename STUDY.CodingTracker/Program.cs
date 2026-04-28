@@ -13,21 +13,21 @@ DateTime endTime;
 
 DateTime.TryParse("01:12:27", out startTime);
 DateTime.TryParse("02:57:46", out endTime);
-CodingSessionModel codingSessionTest = new(0, "01:12:27", "02:57:46");
-Console.WriteLine($"Time test: {codingSessionTest._duration}");
+CodingSessionModel codingSessionTest = new("01:12:27", "02:57:46");
+Console.WriteLine($"Time test: {codingSessionTest.duration}");
 
 CodingSessionController codingSessionController = new(config);
 codingSessionController.AddCodingSession(codingSessionTest);
 
 foreach(var codingSession in codingSessionController.GetCodingSessions())
 {
-    Console.WriteLine($"{codingSession._id} | {codingSession._startTime.ToString("dd-MMM-yyyy")} | {codingSession._startTime.ToString("hh:mm:ss")} | {codingSession._endTime.ToString("hh:mm:ss")} | {codingSession._duration}");
+    Console.WriteLine($"{codingSession.id} | {codingSession.startTime.ToString("dd-MMM-yyyy")} | {codingSession.startTime.ToString("hh:mm:ss")} | {codingSession.endTime.ToString("hh:mm:ss")} | {codingSession.duration}");
 }
 
 int numberOfRows = codingSessionController.DeleteCodingSession(3);
 Console.WriteLine($"Number of rows deleted = {numberOfRows}");
 
-CodingSessionModel codingSessionTest2 = new(0, "16:12:42", "18:25:58");
+CodingSessionModel codingSessionTest2 = new("16:12:42", "18:25:58");
 
 int updateNumberOfRows = codingSessionController.UpdateCodingSession(4, codingSessionTest2);
 Console.WriteLine("Updated number of rows: " + updateNumberOfRows);

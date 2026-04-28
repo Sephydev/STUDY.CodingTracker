@@ -27,7 +27,7 @@ internal class CodingSessionController
 
         connection.Open();
 
-        var codingSessions = connection.Query<CodingSessionModel>("SELECT ID id, STARTTIME startTime, ENDTIME endTime FROM codingSessions").AsList();
+        var codingSessions = connection.Query<CodingSessionModel>("SELECT STARTTIME start, ENDTIME end, ID newId, DURATION newDuration FROM codingSessions").AsList();
 
         return codingSessions;
     }
@@ -41,7 +41,7 @@ internal class CodingSessionController
         connection.Open();
 
         string sql = "INSERT INTO codingSessions (STARTTIME, ENDTIME, DURATION) VALUES (@StartTime, @EndTime, @Duration)";
-        var parameters = new { @StartTime = codingSession._startTime, @EndTime = codingSession._endTime, @Duration = codingSession._duration };
+        var parameters = new { @StartTime = codingSession.startTime, @EndTime = codingSession.endTime, @Duration = codingSession.duration };
         connection.Execute(sql, parameters);
     }
 
@@ -67,7 +67,7 @@ internal class CodingSessionController
         connection.Open();
 
         string sql = "UPDATE codingSessions SET STARTTIME = @StartTime, ENDTIME = @EndTime, DURATION = @Duration WHERE ID = @IdToUpdate";
-        var parameters = new { @StartTime = updatedCodingSession._startTime, @EndTime = updatedCodingSession._endTime, @Duration = updatedCodingSession._duration, @IdToUpdate = idToUpdate };
+        var parameters = new { @StartTime = updatedCodingSession.startTime, @EndTime = updatedCodingSession.endTime, @Duration = updatedCodingSession.duration, @IdToUpdate = idToUpdate };
 
         int numberOfRows = connection.Execute(sql, parameters);
 
