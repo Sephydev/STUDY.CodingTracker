@@ -1,33 +1,37 @@
 ﻿using Microsoft.Extensions.Configuration;
-using STUDY.CodingTracker.Controllers;
-using STUDY.CodingTracker.Models;
+using STUDY.CodingTracker;
 
+// Can't move it to CodingSessionController because of "Directory.GetCurrentDirectory()"
 IConfiguration config = new ConfigurationBuilder()
 .SetBasePath(Directory.GetCurrentDirectory())
 .AddJsonFile("appsettings.json", optional: false,
     reloadOnChange: true)
 .Build();
 
-DateTime startTime;
-DateTime endTime;
+UserInterface ui = new UserInterface();
 
-DateTime.TryParse("01:12:27", out startTime);
-DateTime.TryParse("02:57:46", out endTime);
-CodingSessionModel codingSessionTest = new("01:12:27", "02:57:46");
-Console.WriteLine($"Time test: {codingSessionTest.duration}");
+ui.MainMenu();
 
-CodingSessionController codingSessionController = new(config);
-codingSessionController.AddCodingSession(codingSessionTest);
+//DateTime startTime;
+//DateTime endTime;
 
-foreach(var codingSession in codingSessionController.GetCodingSessions())
-{
-    Console.WriteLine($"{codingSession.id} | {codingSession.startTime.ToString("dd-MMM-yyyy")} | {codingSession.startTime.ToString("hh:mm:ss")} | {codingSession.endTime.ToString("hh:mm:ss")} | {codingSession.duration}");
-}
+//DateTime.TryParse("01:12:27", out startTime);
+//DateTime.TryParse("02:57:46", out endTime);
+//CodingSessionModel codingSessionTest = new("01:12:27", "02:57:46");
+//Console.WriteLine($"Time test: {codingSessionTest.duration}");
 
-int numberOfRows = codingSessionController.DeleteCodingSession(3);
-Console.WriteLine($"Number of rows deleted = {numberOfRows}");
+//CodingSessionController codingSessionController = new(config);
+//codingSessionController.AddCodingSession(codingSessionTest);
 
-CodingSessionModel codingSessionTest2 = new("16:12:42", "18:25:58");
+//foreach(var codingSession in codingSessionController.GetCodingSessions())
+//{
+//    Console.WriteLine($"{codingSession.id} | {codingSession.startTime.ToString("dd-MMM-yyyy")} | {codingSession.startTime.ToString("hh:mm:ss")} | {codingSession.endTime.ToString("hh:mm:ss")} | {codingSession.duration}");
+//}
 
-int updateNumberOfRows = codingSessionController.UpdateCodingSession(4, codingSessionTest2);
-Console.WriteLine("Updated number of rows: " + updateNumberOfRows);
+//int numberOfRows = codingSessionController.DeleteCodingSession(3);
+//Console.WriteLine($"Number of rows deleted = {numberOfRows}");
+
+//CodingSessionModel codingSessionTest2 = new("16:12:42", "18:25:58");
+
+//int updateNumberOfRows = codingSessionController.UpdateCodingSession(4, codingSessionTest2);
+//Console.WriteLine("Updated number of rows: " + updateNumberOfRows);
