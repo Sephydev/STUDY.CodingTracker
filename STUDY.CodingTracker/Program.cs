@@ -23,3 +23,6 @@ foreach(var codingSession in codingSessionController.GetCodingSessions())
 {
     Console.WriteLine($"{codingSession._id} | {codingSession._startTime.ToString("dd-MMM-yyyy")} | {codingSession._startTime.ToString("hh:mm:ss")} | {codingSession._endTime.ToString("hh:mm:ss")} | {codingSession._duration}");
 }
+
+int numberOfRows = codingSessionController.DeleteCodingSession(3);
+Console.WriteLine($"Number of rows deleted = {numberOfRows}");

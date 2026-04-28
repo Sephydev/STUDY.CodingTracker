@@ -47,6 +47,17 @@ internal class CodingSessionController
 
     // Delete
 
+    public int DeleteCodingSession(int idToDelete)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        connection.Open();
+
+        int numberOfRows = connection.Execute("DELETE FROM codingSessions WHERE ID = @IdToDelete", new { @IdToDelete = idToDelete });
+
+        return numberOfRows;
+    }
+
     // Update
 
     private void CreateTable()
