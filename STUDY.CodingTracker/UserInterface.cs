@@ -1,9 +1,26 @@
-﻿using Spectre.Console;
+﻿using Microsoft.Extensions.Configuration;
+using Spectre.Console;
+using STUDY.CodingTracker.Controllers;
+using STUDY.CodingTracker.Models;
 
 namespace STUDY.CodingTracker;
 
 internal class UserInterface
 {
+    private CodingSessionController _codingSessionController;
+
+    public UserInterface()
+    {
+        // Can't move it to CodingSessionController because of "Directory.GetCurrentDirectory()"
+        IConfiguration config = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", optional: false,
+            reloadOnChange: true)
+        .Build();
+
+        _codingSessionController = new CodingSessionController(config);
+    }
+
     public void MainMenu()
     {
         while (true)
@@ -13,7 +30,8 @@ internal class UserInterface
             switch (choice)
             {
                 case "View Coding Sessions":
-                    AnsiConsole.MarkupLine($"'{choice}' is under construction. Please try again later.");
+                    DisplayCodingSessionsTable();
+                    AnsiConsole.MarkupLine("Press Any Key to Continue.");
                     Console.ReadKey();
                     break;
                 case "Add Coding Session":
@@ -50,5 +68,30 @@ internal class UserInterface
             );
 
         return choice;
+    }
+
+    private void DisplayCodingSessionsTable()
+    {
+        var codingSessions = _codingSessionController.GetCodingSessions();
+        var table = new Table().RoundedBorder().BorderColor(Color.Gold1);
+
+        table.AddColumn("[DarkOrange]ID[/]");
+        table.AddColumn("[DarkOrange]Date[/]");
+        table.AddColumn("[DarkOrange]Start Time[/]");
+        table.AddColumn("[DarkOrange]End Time[/]");
+        table.AddColumn("[DarkOrange]Duration[/]");
+
+        foreach(CodingSessionModel codingSession in codingSessions)
+        {
+            table.AddRow(
+                $"[yellow]{codingSession.id.ToString()}[/]", 
+                codingSession.startTime.ToString("dd-MM-yyyy"), 
+                codingSession.startTime.ToString("HH:mm:ss"), 
+                codingSession.endTime.ToString("HH:mm:ss"), 
+                codingSession.duration.ToString()
+            );
+        }
+
+        AnsiConsole.Write(table);
     }
 }

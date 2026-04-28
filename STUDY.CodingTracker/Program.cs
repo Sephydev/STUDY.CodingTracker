@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using STUDY.CodingTracker;
 
-// Can't move it to CodingSessionController because of "Directory.GetCurrentDirectory()"
-IConfiguration config = new ConfigurationBuilder()
-.SetBasePath(Directory.GetCurrentDirectory())
-.AddJsonFile("appsettings.json", optional: false,
-    reloadOnChange: true)
-.Build();
+
 
 UserInterface ui = new UserInterface();
 
