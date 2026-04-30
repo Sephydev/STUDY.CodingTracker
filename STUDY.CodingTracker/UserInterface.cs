@@ -2,6 +2,7 @@
 using Spectre.Console;
 using STUDY.CodingTracker.Controllers;
 using STUDY.CodingTracker.Models;
+using STUDY.CodingTracker;
 
 namespace STUDY.CodingTracker;
 
@@ -35,7 +36,7 @@ internal class UserInterface
                     Console.ReadKey();
                     break;
                 case "Add Coding Session":
-                    AnsiConsole.MarkupLine($"'{choice}' is under construction. Please try again later.");
+                    AddingCodingSessionUI();
                     Console.ReadKey();
                     break;
                 case "Delete Coding Session":
@@ -93,5 +94,17 @@ internal class UserInterface
         }
 
         AnsiConsole.Write(table);
+    }
+
+    private void AddingCodingSessionUI()
+    {
+        string startTime = UserInput.GetUserDateInput("start").ToString();
+        string endTime = UserInput.GetUserDateInput("end").ToString();
+
+        CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime);
+
+        _codingSessionController.AddCodingSession(newCodingSession);
+
+        AnsiConsole.MarkupLine("Press Any Key to Continue.");
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
+using Spectre.Console;
 using STUDY.CodingTracker.Models;
 
 namespace STUDY.CodingTracker.Controllers;
@@ -50,6 +51,8 @@ internal class CodingSessionController
             string sql = "INSERT INTO codingSessions (STARTTIME, ENDTIME, DURATION) VALUES (@StartTime, @EndTime, @Duration)";
             var parameters = new { @StartTime = codingSession.startTime, @EndTime = codingSession.endTime, @Duration = codingSession.duration };
             connection.Execute(sql, parameters);
+
+            AnsiConsole.MarkupLine("[green]Coding session added successfully![/]");
         }
         catch (SqliteException e)
         {
