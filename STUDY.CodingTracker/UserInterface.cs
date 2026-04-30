@@ -42,12 +42,11 @@ internal class UserInterface
                     DisplayPressKeyToContinue();
                     break;
                 case "Update Coding Session":
-                    AnsiConsole.MarkupLine($"'{choice}' is under construction. Please try again later.");
-                    Console.ReadKey();
+                    UpdateCodingSessionUI();
+                    DisplayCodingSessionsTable();
                     break;
                 case "Exit the application":
                     AnsiConsole.MarkupLine("Thank you for using the app! See you soon!");
-                    Console.ReadKey();
                     return;
             }
         }
@@ -98,10 +97,7 @@ internal class UserInterface
 
     private void AddingCodingSessionUI()
     {
-        string startTime = UserInput.GetUserDateInput("start").ToString();
-        string endTime = UserInput.GetUserDateInput("end").ToString();
-
-        CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime);
+        CodingSessionModel newCodingSession = CreateCodingSession();
 
         _codingSessionController.AddCodingSession(newCodingSession);
     }
@@ -127,9 +123,41 @@ internal class UserInterface
         }
     }
 
+    private void UpdateCodingSessionUI()
+    {
+        while (true)
+        {
+            DisplayCodingSessionsTable();
+
+            int idToUpdate = UserInput.GetUserIDInput("update");
+
+            CodingSessionModel updatedCodingSession = CreateCodingSession();
+
+            int numberOfRows = _codingSessionController.UpdateCodingSession(idToUpdate, updatedCodingSession);
+
+            if (numberOfRows > 0)
+            {
+                AnsiConsole.MarkupLine("[green]Coding session deleted successfully![/]");
+                return;
+            }
+
+            AnsiConsole.MarkupLine("[red]The id you entered doesn't exist.[/]");
+        }
+    }
+
     private void DisplayPressKeyToContinue()
     {
         AnsiConsole.MarkupLine("Press Any Key to Continue.");
         Console.ReadKey();
+    }
+
+    private CodingSessionModel CreateCodingSession()
+    {
+        string startTime = UserInput.GetUserDateInput("start").ToString();
+        string endTime = UserInput.GetUserDateInput("end").ToString();
+
+        CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime);
+
+        return newCodingSession;
     }
 }
