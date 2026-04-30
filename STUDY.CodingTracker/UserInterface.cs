@@ -43,7 +43,7 @@ internal class UserInterface
                     break;
                 case "Update Coding Session":
                     UpdateCodingSessionUI();
-                    DisplayCodingSessionsTable();
+                    DisplayPressKeyToContinue();
                     break;
                 case "Exit the application":
                     AnsiConsole.MarkupLine("Thank you for using the app! See you soon!");
@@ -137,7 +137,7 @@ internal class UserInterface
 
             if (numberOfRows > 0)
             {
-                AnsiConsole.MarkupLine("[green]Coding session deleted successfully![/]");
+                AnsiConsole.MarkupLine("[green]Coding session updated successfully![/]");
                 return;
             }
 
@@ -153,8 +153,8 @@ internal class UserInterface
 
     private CodingSessionModel CreateCodingSession()
     {
-        string startTime = UserInput.GetUserDateInput("start").ToString();
-        string endTime = UserInput.GetUserDateInput("end").ToString();
+        DateTime startTime = UserInput.GetUserDateInput("start");
+        DateTime endTime = UserInput.GetUserDateInput("end");
 
         CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime);
 

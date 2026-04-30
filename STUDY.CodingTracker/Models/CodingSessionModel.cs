@@ -7,7 +7,7 @@ internal class CodingSessionModel
     public DateTime endTime { get; set; }
     public TimeSpan duration { get; }
 
-    public CodingSessionModel (string start, string end, Int64 newId = 0, string newDuration = "-1")
+    public CodingSessionModel (string start, string end, Int64 newId, string newDuration)
     {
         id = newId;
 
@@ -15,7 +15,14 @@ internal class CodingSessionModel
 
         endTime = ConvertStringToDateTime(end);
 
-        duration = newDuration == "-1" ? endTime.Subtract(startTime) : ConvertStringToTimeSpan(newDuration);
+        duration = ConvertStringToTimeSpan(newDuration);
+    }
+
+    public CodingSessionModel (DateTime start, DateTime end)
+    {
+        startTime = start;
+        endTime = end;
+        duration = endTime.Subtract(startTime);
     }
 
     private DateTime ConvertStringToDateTime(string date)
