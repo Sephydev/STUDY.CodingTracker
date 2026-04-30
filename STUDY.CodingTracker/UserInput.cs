@@ -12,7 +12,7 @@ internal static class UserInput
 
     public static int GetUserIDInput(string operation)
     {
-        int id = AnsiConsole.Ask<int>($"Please enter the id of the coding session you want to {operation}");
+        int id = AnsiConsole.Ask<int>($"Please enter the id of the coding session you want to {operation}:");
         return id;
     }
 }
