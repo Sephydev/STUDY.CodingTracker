@@ -32,16 +32,15 @@ internal class UserInterface
             {
                 case "View Coding Sessions":
                     DisplayCodingSessionsTable();
-                    AnsiConsole.MarkupLine("Press Any Key to Continue.");
-                    Console.ReadKey();
+                    DisplayPressKeyToContinue();
                     break;
                 case "Add Coding Session":
                     AddingCodingSessionUI();
-                    Console.ReadKey();
+                    DisplayPressKeyToContinue();
                     break;
                 case "Delete Coding Session":
-                    AnsiConsole.MarkupLine($"'{choice}' is under construction. Please try again later.");
-                    Console.ReadKey();
+                    DeleteCodingSessionUI();
+                    DisplayPressKeyToContinue();
                     break;
                 case "Update Coding Session":
                     AnsiConsole.MarkupLine($"'{choice}' is under construction. Please try again later.");
@@ -73,6 +72,8 @@ internal class UserInterface
 
     private void DisplayCodingSessionsTable()
     {
+        Console.Clear();
+
         var codingSessions = _codingSessionController.GetCodingSessions();
         var table = new Table().RoundedBorder().BorderColor(Color.Gold1);
 
@@ -104,7 +105,32 @@ internal class UserInterface
         CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime);
 
         _codingSessionController.AddCodingSession(newCodingSession);
+    }
 
+    private void DeleteCodingSessionUI()
+    {
+        while (true)
+        {
+            DisplayCodingSessionsTable();
+
+            int idToDelete = UserInput.GetUserIDInput("delete");
+
+            int numberOfRows = _codingSessionController.DeleteCodingSession(idToDelete);
+
+            if (numberOfRows > 0)
+            {
+                AnsiConsole.MarkupLine("[green]Coding session deleted successfully![/]");
+                return;
+            }
+
+            AnsiConsole.MarkupLine("[red]The id you entered doesn't exist.[/]");
+            DisplayPressKeyToContinue();
+        }
+    }
+
+    private void DisplayPressKeyToContinue()
+    {
         AnsiConsole.MarkupLine("Press Any Key to Continue.");
+        Console.ReadKey();
     }
 }

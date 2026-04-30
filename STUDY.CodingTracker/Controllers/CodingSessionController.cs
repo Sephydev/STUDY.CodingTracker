@@ -76,6 +76,7 @@ internal class CodingSessionController
         {
             DBErrorMessage("deleting the coding session", e.Message);
         }
+
         return numberOfRowsDeleted;
     }
 
