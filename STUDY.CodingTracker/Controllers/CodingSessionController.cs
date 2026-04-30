@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
-using Spectre.Console;
 using STUDY.CodingTracker.Models;
 
 namespace STUDY.CodingTracker.Controllers;
@@ -40,8 +39,10 @@ internal class CodingSessionController
         return codingSessions;
     }
 
-    public void AddCodingSession(CodingSessionModel codingSession)
+    public bool AddCodingSession(CodingSessionModel codingSession)
     {
+        bool success = false;
+
         try
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -52,12 +53,14 @@ internal class CodingSessionController
             var parameters = new { @StartTime = codingSession.startTime, @EndTime = codingSession.endTime, @Duration = codingSession.duration };
             connection.Execute(sql, parameters);
 
-            AnsiConsole.MarkupLine("[green]Coding session added successfully![/]");
+            success = true;
         }
         catch (SqliteException e)
         {
             DBErrorMessage("adding the coding session", e.Message);
         }
+
+        return success;
     }
 
     public int DeleteCodingSession(int idToDelete)

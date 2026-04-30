@@ -97,9 +97,19 @@ internal class UserInterface
 
     private void AddingCodingSessionUI()
     {
+        bool success;
+
         CodingSessionModel newCodingSession = CreateCodingSession();
 
-        _codingSessionController.AddCodingSession(newCodingSession);
+        success = _codingSessionController.AddCodingSession(newCodingSession);
+
+        if (success)
+        {
+            AnsiConsole.MarkupLine("[green]Coding session added successfully![/]");
+            return;
+        }
+
+        AnsiConsole.MarkupLine("[red]Coding session was not added...[/]");
     }
 
     private void DeleteCodingSessionUI()
