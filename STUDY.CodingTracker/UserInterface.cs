@@ -2,7 +2,6 @@
 using Spectre.Console;
 using STUDY.CodingTracker.Controllers;
 using STUDY.CodingTracker.Models;
-using STUDY.CodingTracker;
 
 namespace STUDY.CodingTracker;
 
