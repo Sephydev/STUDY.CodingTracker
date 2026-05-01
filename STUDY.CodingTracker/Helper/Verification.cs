@@ -10,7 +10,7 @@ internal static class Verification
         bool correct = false;
         DateTime date = new DateTime();
 
-        if (dateInput != null && DateTime.TryParseExact(dateInput, "HH:mm:ss", new CultureInfo("en-US"), DateTimeStyles.None, out date))
+        if (dateInput != null && DateTime.TryParseExact(dateInput, "dd/MM/yyyy HH:mm", new CultureInfo("en-US"), DateTimeStyles.None, out date))
         {
             correct = true;
         }

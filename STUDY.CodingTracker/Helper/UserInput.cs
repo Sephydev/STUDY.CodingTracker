@@ -6,7 +6,7 @@ internal static class UserInput
 {
     public static string GetUserDateInput(string period)
     {
-        string dateInput = AnsiConsole.Ask<string>($"Please enter the {period} date (format: HH:mm:ss):");
+        string dateInput = AnsiConsole.Ask<string>($"Please enter the {period} date (format: dd/MM/yyyy HH:mm):");
         return dateInput;
     }
 

@@ -77,7 +77,6 @@ internal class UserInterface
         var table = new Table().RoundedBorder().BorderColor(Color.Gold1);
 
         table.AddColumn("[DarkOrange]ID[/]");
-        table.AddColumn("[DarkOrange]Date[/]");
         table.AddColumn("[DarkOrange]Start Time[/]");
         table.AddColumn("[DarkOrange]End Time[/]");
         table.AddColumn("[DarkOrange]Duration[/]");
@@ -86,9 +85,8 @@ internal class UserInterface
         {
             table.AddRow(
                 $"[yellow]{codingSession.id.ToString()}[/]", 
-                codingSession.startTime.ToString("dd-MM-yyyy"), 
-                codingSession.startTime.ToString("HH:mm:ss"), 
-                codingSession.endTime.ToString("HH:mm:ss"), 
+                codingSession.startTime.ToString("dd/MMM/yyyy HH:mm"), 
+                codingSession.endTime.ToString("dd/MMM/yyyy HH:mm"), 
                 codingSession.duration.ToString()
             );
         }
@@ -215,7 +213,7 @@ internal class UserInterface
     private void DisplayInputDateErrorMessage()
     {
         AnsiConsole.MarkupLine("[red]You've inputted the date in a wrong format and/or in the wrong order. Please try again![/]");
-        AnsiConsole.MarkupLine("Good format: [green]HH:mm:ss[/]");
+        AnsiConsole.MarkupLine("Good format: [green]dd/MM/yyyy HH:mm[/] (d = day, M = month, y = year, H = hour, m = minute)");
         AnsiConsole.MarkupLine("The start time must be [green]earlier[/] than end time.");
         DisplayPressKeyToContinue();
     }
