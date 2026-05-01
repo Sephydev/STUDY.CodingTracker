@@ -1,4 +1,5 @@
 ﻿using Spectre.Console;
+using STUDY.CodingTracker.Helper;
 
 namespace STUDY.CodingTracker.Helper;
 
@@ -9,11 +10,13 @@ internal static class UserInput
         while (true)
         {
             Console.Clear();
-            string dateInput = AnsiConsole.Ask<string>($"Please enter the {period} date (format: HH:mm:ss):");
 
-            if (Verification.VerifyDate(dateInput).correct)
+            string dateInput = AnsiConsole.Ask<string>($"Please enter the {period} date (format: HH:mm:ss):");
+            var verificationResult = Verification.VerifyDate(dateInput);
+
+            if (verificationResult.correct)
             {
-                DateTime date = Verification.VerifyDate(dateInput).date;
+                DateTime date = verificationResult.date;
                 return date;
             }
 
@@ -22,9 +25,13 @@ internal static class UserInput
         }
     }
 
-    public static int GetUserIDInput(string operation)
+    public static string GetUserIDInput(string operation)
     {
-        int id = AnsiConsole.Ask<int>($"Please enter the id of the coding session you want to {operation}:");
-        return id;
+        while (true)
+        {
+            string idInput = AnsiConsole.Ask<string>($"Please enter the id of the coding session you want to {operation}:");
+                
+            return idInput;
+        }
     }
 }

@@ -14,6 +14,19 @@ internal static class Verification
             correct = true;
         }
 
-        return (correct: correct, date: date);
+        return (correct, date);
+    }
+
+    public static (bool correct, int id) VerifyId(string idInput)
+    {
+        bool correct = false;
+        int id = 0;
+
+        if (idInput != null && int.TryParse(idInput, out id) && id >= 0)
+        {
+            correct = true;
+        }
+
+        return (correct, id);
     }
 }

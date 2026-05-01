@@ -119,9 +119,15 @@ internal class UserInterface
         {
             DisplayCodingSessionsTable();
 
-            int idToDelete = UserInput.GetUserIDInput("delete");
+            string idToDelete = UserInput.GetUserIDInput("delete");
+            var verificationResult = Verification.VerifyId(idToDelete);
 
-            int numberOfRows = _codingSessionController.DeleteCodingSession(idToDelete);
+            if (!verificationResult.correct)
+            {
+                DisplayInputIDErrorMessage();
+                continue;
+            }
+            int numberOfRows = _codingSessionController.DeleteCodingSession(verificationResult.id);
 
             if (numberOfRows > 0)
             {
@@ -140,11 +146,18 @@ internal class UserInterface
         {
             DisplayCodingSessionsTable();
 
-            int idToUpdate = UserInput.GetUserIDInput("update");
+            string idToUpdate = UserInput.GetUserIDInput("update");
+            var verificationResult = Verification.VerifyId(idToUpdate);
+
+            if (!verificationResult.correct)
+            {
+                DisplayInputIDErrorMessage();
+                continue;
+            }
 
             CodingSessionModel updatedCodingSession = CreateCodingSession();
 
-            int numberOfRows = _codingSessionController.UpdateCodingSession(idToUpdate, updatedCodingSession);
+            int numberOfRows = _codingSessionController.UpdateCodingSession(verificationResult.id, updatedCodingSession);
 
             if (numberOfRows > 0)
             {
@@ -158,7 +171,7 @@ internal class UserInterface
 
     private void DisplayPressKeyToContinue()
     {
-        AnsiConsole.MarkupLine("Press Any Key to Continue.");
+        AnsiConsole.MarkupLine("(Press Any Key to Continue.)");
         Console.ReadKey();
     }
 
@@ -170,5 +183,12 @@ internal class UserInterface
         CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime);
 
         return newCodingSession;
+    }
+
+    private void DisplayInputIDErrorMessage()
+    {
+        AnsiConsole.WriteLine("You've inputted the ID in a wrong format. Please try again!");
+        AnsiConsole.WriteLine("It must be a whole positive number.");
+        DisplayPressKeyToContinue();
     }
 }
