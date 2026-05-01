@@ -177,18 +177,45 @@ internal class UserInterface
 
     private CodingSessionModel CreateCodingSession()
     {
-        DateTime startTime = UserInput.GetUserDateInput("start");
-        DateTime endTime = UserInput.GetUserDateInput("end");
+        while (true)
+        {
+            Console.Clear();
 
-        CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime);
+            string startTime = UserInput.GetUserDateInput("start");
+            var verificationResultStartTime = Verification.VerifyDate(startTime);
 
-        return newCodingSession;
+            if (!verificationResultStartTime.correct)
+            {
+                DisplayInputDateErrorMessage();
+                continue;
+            }
+
+            string endTime = UserInput.GetUserDateInput("end");
+            var verificationResultEndTime = Verification.VerifyDate(endTime);
+
+            if (!verificationResultEndTime.correct)
+            {
+                DisplayInputDateErrorMessage();
+                continue;
+            }
+
+            CodingSessionModel newCodingSession = new CodingSessionModel(verificationResultStartTime.date, verificationResultEndTime.date);
+
+            return newCodingSession;
+        }
     }
 
     private void DisplayInputIDErrorMessage()
     {
-        AnsiConsole.WriteLine("You've inputted the ID in a wrong format. Please try again!");
-        AnsiConsole.WriteLine("It must be a whole positive number.");
+        AnsiConsole.MarkupLine("[red]You've inputted the ID in a wrong format. Please try again![/]");
+        AnsiConsole.MarkupLine("Good format: [green]It must be a whole positive number.[/]");
+        DisplayPressKeyToContinue();
+    }
+
+    private void DisplayInputDateErrorMessage()
+    {
+        AnsiConsole.MarkupLine("[red]You've inputted the date in a wrong format. Please try again![/]");
+        AnsiConsole.MarkupLine("Good format: [green]HH:mm:ss[/]");
         DisplayPressKeyToContinue();
     }
 }
