@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace STUDY.CodingTracker;
+namespace STUDY.CodingTracker.Helper;
 
 internal static class UserInput
 {
