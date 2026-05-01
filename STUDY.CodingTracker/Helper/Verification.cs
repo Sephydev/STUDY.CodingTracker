@@ -1,5 +1,4 @@
-﻿using Spectre.Console;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace STUDY.CodingTracker.Helper;
 
@@ -23,7 +22,7 @@ internal static class Verification
         bool correct = false;
         var formatVerificationResult = VerifyDate(endDateInput);
 
-        if (formatVerificationResult.correct && DateTime.Compare(formatVerificationResult.date, startDate) >= 0)
+        if (formatVerificationResult.correct && DateTime.Compare(formatVerificationResult.date, startDate) > 0)
         {
             correct = true;
         }
