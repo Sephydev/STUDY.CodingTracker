@@ -191,7 +191,7 @@ internal class UserInterface
             }
 
             string endTime = UserInput.GetUserDateInput("end");
-            var verificationResultEndTime = Verification.VerifyDate(endTime);
+            var verificationResultEndTime = Verification.VerifyEndDate(endTime, verificationResultStartTime.date);
 
             if (!verificationResultEndTime.correct)
             {
@@ -214,8 +214,9 @@ internal class UserInterface
 
     private void DisplayInputDateErrorMessage()
     {
-        AnsiConsole.MarkupLine("[red]You've inputted the date in a wrong format. Please try again![/]");
+        AnsiConsole.MarkupLine("[red]You've inputted the date in a wrong format and/or in the wrong order. Please try again![/]");
         AnsiConsole.MarkupLine("Good format: [green]HH:mm:ss[/]");
+        AnsiConsole.MarkupLine("The start time must be [green]earlier[/] than end time.");
         DisplayPressKeyToContinue();
     }
 }
