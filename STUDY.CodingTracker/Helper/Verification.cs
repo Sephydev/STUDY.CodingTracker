@@ -36,7 +36,7 @@ internal static class Verification
         bool correct = false;
         int id = 0;
 
-        if (idInput != null && int.TryParse(idInput, out id) && id >= 0)
+        if (idInput != null && int.TryParse(idInput, out id) && id > 0)
         {
             correct = true;
         }
