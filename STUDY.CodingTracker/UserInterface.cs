@@ -26,44 +26,44 @@ internal class UserInterface
     {
         while (true)
         {
-            string choice = DisplayMainMenu();
+            MainMenuChoice choice = GetMainMenuChoice();
 
             switch (choice)
             {
-                case "View Coding Sessions":
+                case MainMenuChoice.ViewCodingSessions:
                     DisplayCodingSessionsTable();
                     DisplayPressKeyToContinue();
                     break;
-                case "Add Coding Session":
+                case MainMenuChoice.AddCodingSession:
                     AddingCodingSessionUI();
                     DisplayPressKeyToContinue();
                     break;
-                case "Delete Coding Session":
+                case MainMenuChoice.DeleteCodingSession:
                     DeleteCodingSessionUI();
                     DisplayPressKeyToContinue();
                     break;
-                case "Update Coding Session":
+                case MainMenuChoice.UpdateCodingSession:
                     UpdateCodingSessionUI();
                     DisplayPressKeyToContinue();
                     break;
-                case "Exit the application":
+                case MainMenuChoice.Exit:
                     AnsiConsole.MarkupLine("Thank you for using the app! See you soon!");
                     return;
             }
         }
     }
 
-    private string DisplayMainMenu()
+    private MainMenuChoice GetMainMenuChoice()
     {
         Console.Clear();
 
         AnsiConsole.MarkupLine("Welcome to [cyan]Coding Tracker[/]!");
         AnsiConsole.MarkupLine("-----------------------------------");
 
-        string choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
+        MainMenuChoice choice = AnsiConsole.Prompt(
+            new SelectionPrompt<MainMenuChoice>()
             .Title("Please select one of the option:")
-            .AddChoices("View Coding Sessions", "Add Coding Session", "Delete Coding Session", "Update Coding Session", "Exit the application")
+            .AddChoices(Enum.GetValues<MainMenuChoice>())
             );
 
         return choice;
