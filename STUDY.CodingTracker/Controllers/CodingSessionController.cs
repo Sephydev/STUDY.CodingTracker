@@ -29,7 +29,7 @@ internal class CodingSessionController
 
             connection.Open();
 
-            codingSessions = connection.Query<CodingSessionModel>("SELECT STARTTIME start, ENDTIME end, ID newId, DURATION newDuration FROM codingSessions").AsList();
+            codingSessions = connection.Query<CodingSessionModel>("SELECT STARTTIME start, ENDTIME end, ID newId, DURATION newDuration FROM codingSessions ORDER BY STARTTIME DESC").AsList();
         }
         catch (SqliteException e)
         {
