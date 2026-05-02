@@ -35,15 +35,15 @@ internal class UserInterface
                     DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.AddCodingSession:
-                    AddingCodingSessionUI();
+                    AskUserStopwatchChoice();
                     DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.DeleteCodingSession:
-                    DeleteCodingSessionUI();
+                    DisplayDeleteCodingSessionUI();
                     DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.UpdateCodingSession:
-                    UpdateCodingSessionUI();
+                    DisplayUpdateCodingSessionUI();
                     DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.Exit:
@@ -85,8 +85,8 @@ internal class UserInterface
         {
             table.AddRow(
                 $"[yellow]{codingSession.id.ToString()}[/]", 
-                codingSession.startTime.ToString("dd/MMM/yyyy HH:mm"), 
-                codingSession.endTime.ToString("dd/MMM/yyyy HH:mm"), 
+                codingSession.startTime.ToString("dd/MMM/yyyy HH:mm:ss"), 
+                codingSession.endTime.ToString("dd/MMM/yyyy HH:mm:ss"), 
                 codingSession.duration.ToString()
             );
         }
@@ -94,7 +94,39 @@ internal class UserInterface
         AnsiConsole.Write(table);
     }
 
-    private void AddingCodingSessionUI()
+    private void AskUserStopwatchChoice()
+    {
+        string choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title("Do you wish to use the stopwatch?")
+            .AddChoices("Yes", "No")
+            );
+
+        if (choice == "Yes")
+            ManageStopWatch();
+        else
+            DisplayManualAddingCodingSessionUI();
+    }
+
+    private void ManageStopWatch()
+    {
+        bool success;
+        StopWatch stopwatch = new StopWatch();
+
+        DateTime startTime = DateTime.Now;
+
+        TimeSpan duration = stopwatch.LaunchTimer();
+
+        DateTime endTime = DateTime.Now;
+
+        CodingSessionModel newCodingSession = new CodingSessionModel(startTime, endTime, duration);
+
+        success = _codingSessionController.AddCodingSession(newCodingSession);
+
+        DisplaySuccessResultWhenAddingSession(success);
+    }
+
+    private void DisplayManualAddingCodingSessionUI()
     {
         bool success;
 
@@ -102,6 +134,11 @@ internal class UserInterface
 
         success = _codingSessionController.AddCodingSession(newCodingSession);
 
+        DisplaySuccessResultWhenAddingSession(success);
+    }
+
+    private void DisplaySuccessResultWhenAddingSession(bool success)
+    {
         if (success)
         {
             AnsiConsole.MarkupLine("[green]Coding session added successfully![/]");
@@ -111,7 +148,7 @@ internal class UserInterface
         AnsiConsole.MarkupLine("[red]Coding session was not added...[/]");
     }
 
-    private void DeleteCodingSessionUI()
+    private void DisplayDeleteCodingSessionUI()
     {
         while (true)
         {
@@ -138,7 +175,7 @@ internal class UserInterface
         }
     }
 
-    private void UpdateCodingSessionUI()
+    private void DisplayUpdateCodingSessionUI()
     {
         while (true)
         {
@@ -213,7 +250,7 @@ internal class UserInterface
     private void DisplayInputDateErrorMessage()
     {
         AnsiConsole.MarkupLine("[red]You've inputted the date in a wrong format and/or in the wrong order. Please try again![/]");
-        AnsiConsole.MarkupLine("Good format: [green]dd/MM/yyyy HH:mm[/] (d = day, M = month, y = year, H = hour, m = minute)");
+        AnsiConsole.MarkupLine("Good format: [green]dd/MM/yyyy HH:mm:ss[/] (d = day, M = month, y = year, H = hour, m = minute, s = second)");
         AnsiConsole.MarkupLine("The start time must be [green]earlier[/] than end time.");
         DisplayPressKeyToContinue();
     }

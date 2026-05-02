@@ -18,6 +18,13 @@ internal class CodingSessionModel
         duration = ConvertStringToTimeSpan(newDuration);
     }
 
+    public CodingSessionModel (DateTime start, DateTime end, TimeSpan newDuration)
+    {
+        startTime = start;
+        endTime = end;
+        duration = newDuration;
+    }
+
     public CodingSessionModel (DateTime start, DateTime end)
     {
         startTime = start;
