@@ -3,6 +3,7 @@ using Spectre.Console;
 using STUDY.CodingTracker.Controllers;
 using STUDY.CodingTracker.Helper;
 using STUDY.CodingTracker.Models;
+using System.Globalization;
 
 namespace STUDY.CodingTracker;
 
@@ -31,7 +32,7 @@ internal class UserInterface
             switch (choice)
             {
                 case MainMenuChoice.ViewCodingSessions:
-                    DisplayCodingSessionsTable();
+                    AskFilter();
                     DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.AddCodingSession:
@@ -69,11 +70,47 @@ internal class UserInterface
         return choice;
     }
 
-    private void DisplayCodingSessionsTable()
+    private void AskFilter()
+    {
+        int periodNumber = 0;
+
+        Console.Clear();
+
+        string filterChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title("Please select one of the filter:")
+            .AddChoices("week", "day", "year", "none")
+            );
+
+        if (filterChoice != "none")
+            int.TryParse(UserInput.GetUserFilterPeriod(filterChoice), out periodNumber);
+
+        DisplayCodingSessionsTable(filterChoice, periodNumber);
+    }
+
+    private void DisplayCodingSessionsTable(string filterChoice = "none", int periodNumber = 0)
     {
         Console.Clear();
 
         var codingSessions = _codingSessionController.GetCodingSessions();
+        List<CodingSessionModel> filteredCodingSessions = new List<CodingSessionModel>();
+        System.Globalization.Calendar myCal = CultureInfo.InvariantCulture.Calendar;
+        switch(filterChoice)
+        {
+            case "week":
+                filteredCodingSessions = codingSessions.FindAll(c => ISOWeek.GetWeekOfYear(c.startTime) == periodNumber);
+                break;
+            case "day":
+                filteredCodingSessions = codingSessions.FindAll(c => c.startTime.Day == periodNumber);
+                break;
+            case "year":
+                filteredCodingSessions = codingSessions.FindAll(c => c.startTime.Year == periodNumber);
+                break;
+            case "none":
+                filteredCodingSessions = codingSessions;
+                break;
+        }
+
         var table = new Table().RoundedBorder().BorderColor(Color.Gold1);
 
         table.AddColumn("[DarkOrange]ID[/]");
@@ -81,7 +118,7 @@ internal class UserInterface
         table.AddColumn("[DarkOrange]End Time[/]");
         table.AddColumn("[DarkOrange]Duration[/]");
 
-        foreach(CodingSessionModel codingSession in codingSessions)
+        foreach(CodingSessionModel codingSession in filteredCodingSessions)
         {
             table.AddRow(
                 $"[yellow]{codingSession.id.ToString()}[/]", 
