@@ -19,6 +19,8 @@ internal static class UserInput
 
     public static string GetUserFilterPeriod(string filterChoice)
     {
+        Console.Clear();
+
         string periodInput = AnsiConsole.Ask<string>($"Please enter the {filterChoice} number you want the coding sessions displayed be filtered on:");
 
         return periodInput;

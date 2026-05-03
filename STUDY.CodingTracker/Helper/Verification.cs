@@ -42,4 +42,37 @@ internal static class Verification
 
         return (correct, id);
     }
+
+    public static (bool correct, int periodNum) VerifyWeek(string weekInput)
+    {
+        bool correct = false;
+        int weekNum = 0;
+
+        if (weekInput != null && int.TryParse(weekInput, out weekNum) && weekNum > 0 && weekNum < 54)
+            correct = true;
+
+        return (correct, weekNum);
+    }
+
+    public static (bool correct, int periodNum) VerifyDay(string dayInput)
+    {
+        bool correct = false;
+        int dayNum = 0;
+
+        if (dayInput != null && int.TryParse(dayInput, out dayNum) && dayNum > 0 && dayNum < 32)
+            correct = true;
+
+        return (correct, dayNum);
+    }
+
+    public static (bool correct, int periodNum) VerifyYear(string yearInput)
+    {
+        bool correct = false;
+        int yearNum = 0;
+
+        if (yearInput != null && int.TryParse(yearInput, out yearNum) && yearNum >= 1900 && yearNum <= DateTime.Now.Year)
+            correct = true;
+
+        return (correct, yearNum);
+    }
 }

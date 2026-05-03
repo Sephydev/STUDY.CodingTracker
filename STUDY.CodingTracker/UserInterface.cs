@@ -72,7 +72,8 @@ internal class UserInterface
 
     private void AskFilter()
     {
-        int periodNumber = 0;
+        (bool correct, int periodNum) validationResult = (false, 0);
+        string userInput = "";
 
         Console.Clear();
 
@@ -80,12 +81,41 @@ internal class UserInterface
             new SelectionPrompt<string>()
             .Title("Please select one of the filter:")
             .AddChoices("week", "day", "year", "none")
-            );
+        );
 
-        if (filterChoice != "none")
-            int.TryParse(UserInput.GetUserFilterPeriod(filterChoice), out periodNumber);
+        while (true)
+        {
+            if (filterChoice != "none")
+                userInput = UserInput.GetUserFilterPeriod(filterChoice);
 
-        DisplayCodingSessionsTable(filterChoice, periodNumber);
+            switch (filterChoice)
+            {
+                case "week":
+                    validationResult = Verification.VerifyWeek(userInput);
+                    break;
+                case "day":
+                    validationResult = Verification.VerifyDay(userInput);
+                    break;
+                case "year":
+                    validationResult = Verification.VerifyYear(userInput);
+                    break;
+            }
+
+            if (filterChoice == "none")
+            {
+                DisplayCodingSessionsTable();
+            }
+            else if (validationResult.correct)
+            {
+                DisplayCodingSessionsTable(filterChoice, validationResult.periodNum);
+                return;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Please enter a correct number based on the period you've chosen.[/]");
+                DisplayPressKeyToContinue();
+            }
+        }
     }
 
     private void DisplayCodingSessionsTable(string filterChoice = "none", int periodNumber = 0)
@@ -95,7 +125,7 @@ internal class UserInterface
         var codingSessions = _codingSessionController.GetCodingSessions();
         List<CodingSessionModel> filteredCodingSessions = new List<CodingSessionModel>();
         System.Globalization.Calendar myCal = CultureInfo.InvariantCulture.Calendar;
-        switch(filterChoice)
+        switch (filterChoice)
         {
             case "week":
                 filteredCodingSessions = codingSessions.FindAll(c => ISOWeek.GetWeekOfYear(c.startTime) == periodNumber);
@@ -118,12 +148,12 @@ internal class UserInterface
         table.AddColumn("[DarkOrange]End Time[/]");
         table.AddColumn("[DarkOrange]Duration[/]");
 
-        foreach(CodingSessionModel codingSession in filteredCodingSessions)
+        foreach (CodingSessionModel codingSession in filteredCodingSessions)
         {
             table.AddRow(
-                $"[yellow]{codingSession.id.ToString()}[/]", 
-                codingSession.startTime.ToString("dd/MMM/yyyy HH:mm:ss"), 
-                codingSession.endTime.ToString("dd/MMM/yyyy HH:mm:ss"), 
+                $"[yellow]{codingSession.id.ToString()}[/]",
+                codingSession.startTime.ToString("dd/MMM/yyyy HH:mm:ss"),
+                codingSession.endTime.ToString("dd/MMM/yyyy HH:mm:ss"),
                 codingSession.duration.ToString()
             );
         }
