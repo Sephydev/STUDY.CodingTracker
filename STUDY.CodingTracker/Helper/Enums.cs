@@ -22,3 +22,10 @@ public enum StopwatchChoice
     Yes,
     No
 }
+
+public enum OrderChoice
+{
+    Descending,
+    Ascending,
+    None
+}

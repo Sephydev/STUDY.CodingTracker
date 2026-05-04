@@ -43,36 +43,48 @@ internal static class Verification
         return (correct, id);
     }
 
+    private static (bool, int) VerifyPeriod(string periodInput)
+    {
+        bool correct = false;
+        int periodNum = 0;
+
+        if (periodInput != null && int.TryParse(periodInput, out periodNum))
+        {
+            correct = true;
+        }
+        return (correct, periodNum);
+    }
+
     public static (bool correct, int periodNum) VerifyWeek(string weekInput)
     {
         bool correct = false;
-        int weekNum = 0;
+        (bool correct, int weekNum) basicVerificationResult = VerifyPeriod(weekInput);
 
-        if (weekInput != null && int.TryParse(weekInput, out weekNum) && weekNum > 0 && weekNum < 54)
+        if (basicVerificationResult.correct && basicVerificationResult.weekNum > 0 && basicVerificationResult.weekNum < 54)
             correct = true;
 
-        return (correct, weekNum);
+        return (correct, basicVerificationResult.weekNum);
     }
 
     public static (bool correct, int periodNum) VerifyDay(string dayInput)
     {
         bool correct = false;
-        int dayNum = 0;
+        (bool correct, int dayNum) basicVerificationResult = VerifyPeriod(dayInput);
 
-        if (dayInput != null && int.TryParse(dayInput, out dayNum) && dayNum > 0 && dayNum < 32)
+        if (basicVerificationResult.correct && basicVerificationResult.dayNum > 0 && basicVerificationResult.dayNum < 32)
             correct = true;
 
-        return (correct, dayNum);
+        return (correct, basicVerificationResult.dayNum);
     }
 
     public static (bool correct, int periodNum) VerifyYear(string yearInput)
     {
         bool correct = false;
-        int yearNum = 0;
+        (bool correct, int yearNum) basicVerificationResult = VerifyPeriod(yearInput);
 
-        if (yearInput != null && int.TryParse(yearInput, out yearNum) && yearNum >= 1900 && yearNum <= DateTime.Now.Year)
+        if (basicVerificationResult.correct && basicVerificationResult.yearNum >= 1900 && basicVerificationResult.yearNum <= DateTime.Now.Year)
             correct = true;
 
-        return (correct, yearNum);
+        return (correct, basicVerificationResult.yearNum);
     }
 }

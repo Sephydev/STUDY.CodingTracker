@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
+using STUDY.CodingTracker.Helper;
 using STUDY.CodingTracker.Models;
+using System.Globalization;
 
 namespace STUDY.CodingTracker.Controllers;
 
@@ -19,9 +21,20 @@ internal class CodingSessionController
         CreateTable();
     }
 
-    public List<CodingSessionModel> GetCodingSessions()
+    public List<CodingSessionModel> GetCodingSessions(FilterChoice filterChoice, int periodNum, OrderChoice orderChoice)
     {
         List<CodingSessionModel> codingSessions = new();
+        List<CodingSessionModel> filteredCodingSessions = new List<CodingSessionModel>();
+
+        string order = orderChoice == OrderChoice.Descending ? "ORDER BY STARTTIME DESC" : orderChoice == OrderChoice.Ascending ? "ORDER BY STARTTIME ASC" : "";
+
+        string command = $@"
+            SELECT STARTTIME start,
+            ENDTIME end, 
+            ID newId, 
+            DURATION newDuration FROM codingSessions
+            {order}
+        ";
 
         try
         {
@@ -29,14 +42,31 @@ internal class CodingSessionController
 
             connection.Open();
 
-            codingSessions = connection.Query<CodingSessionModel>("SELECT STARTTIME start, ENDTIME end, ID newId, DURATION newDuration FROM codingSessions ORDER BY STARTTIME DESC").AsList();
+            codingSessions = connection.Query<CodingSessionModel>(command).AsList();
         }
         catch (SqliteException e)
         {
             DBErrorMessage("getting the saved coding sessions", e.Message);
         }
 
-        return codingSessions;
+        filteredCodingSessions = FilterCodingSession(filterChoice, periodNum, codingSessions);
+
+        return filteredCodingSessions;
+    }
+
+    private static List<CodingSessionModel> FilterCodingSession(FilterChoice filterChoice, int periodNum, List<CodingSessionModel> codingSessions)
+    {
+        switch (filterChoice)
+        {
+            case FilterChoice.Week:
+                return codingSessions.FindAll(c => ISOWeek.GetWeekOfYear(c.startTime) == periodNum);
+            case FilterChoice.Day:
+                return codingSessions.FindAll(c => c.startTime.Day == periodNum);
+            case FilterChoice.Year:
+                return codingSessions.FindAll(c => c.startTime.Year == periodNum);
+            default:
+                return codingSessions;
+        }
     }
 
     public bool AddCodingSession(CodingSessionModel codingSession)
@@ -75,7 +105,7 @@ internal class CodingSessionController
 
             numberOfRowsDeleted = connection.Execute("DELETE FROM codingSessions WHERE ID = @IdToDelete", new { @IdToDelete = idToDelete });
         }
-        catch(SqliteException e)
+        catch (SqliteException e)
         {
             DBErrorMessage("deleting the coding session", e.Message);
         }

@@ -32,7 +32,11 @@ internal class UserInterface
             switch (choice)
             {
                 case MainMenuChoice.ViewCodingSessions:
-                    AskFilter();
+                    FilterChoice filterChoice = AskFilter();
+                    int periodNum = AskPeriodNum(filterChoice);
+                    OrderChoice orderChoice = AskOrder();
+
+                    DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
                     DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.AddCodingSession:
@@ -70,11 +74,8 @@ internal class UserInterface
         return choice;
     }
 
-    private void AskFilter()
+    private FilterChoice AskFilter()
     {
-        (bool correct, int periodNum) validationResult = (false, 0);
-        string userInput = "";
-
         Console.Clear();
 
         FilterChoice filterChoice = AnsiConsole.Prompt(
@@ -83,16 +84,24 @@ internal class UserInterface
             .AddChoices(Enum.GetValues<FilterChoice>())
         );
 
+        return filterChoice;
+    }
+
+    private int AskPeriodNum(FilterChoice filterChoice)
+    {
         while (true)
         {
+            string userInput = "";
+            int periodNum = 0;
+            (bool correct, int periodNum) validationResult = (false, 0);
+
             if (filterChoice != FilterChoice.None)
             {
                 userInput = UserInput.GetUserFilterPeriod(filterChoice);
             }
             else
             {
-                DisplayCodingSessionsTable();
-                return;
+                return periodNum;
             }
 
             switch (filterChoice)
@@ -110,8 +119,7 @@ internal class UserInterface
 
             if (validationResult.correct)
             {
-                DisplayCodingSessionsTable(filterChoice, validationResult.periodNum);
-                return;
+                return validationResult.periodNum;
             }
             else
             {
@@ -121,29 +129,22 @@ internal class UserInterface
         }
     }
 
-    private void DisplayCodingSessionsTable(FilterChoice filterChoice = FilterChoice.None, int periodNumber = 0)
+    private OrderChoice AskOrder()
+    {
+        OrderChoice orderChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<OrderChoice>()
+            .Title("Please select one of the order:")
+            .AddChoices(Enum.GetValues<OrderChoice>())
+        );
+
+        return orderChoice;
+    }
+
+    private void DisplayCodingSessionsTable(FilterChoice filterChoice, int periodNum, OrderChoice orderChoice)
     {
         Console.Clear();
 
-        var codingSessions = _codingSessionController.GetCodingSessions();
-        List<CodingSessionModel> filteredCodingSessions = new List<CodingSessionModel>();
-        System.Globalization.Calendar myCal = CultureInfo.InvariantCulture.Calendar;
-
-        switch (filterChoice)
-        {
-            case FilterChoice.Week:
-                filteredCodingSessions = codingSessions.FindAll(c => ISOWeek.GetWeekOfYear(c.startTime) == periodNumber);
-                break;
-            case FilterChoice.Day:
-                filteredCodingSessions = codingSessions.FindAll(c => c.startTime.Day == periodNumber);
-                break;
-            case FilterChoice.Year:
-                filteredCodingSessions = codingSessions.FindAll(c => c.startTime.Year == periodNumber);
-                break;
-            case FilterChoice.None:
-                filteredCodingSessions = codingSessions;
-                break;
-        }
+        var codingSessions = _codingSessionController.GetCodingSessions(filterChoice, periodNum, orderChoice);
 
         var table = new Table().RoundedBorder().BorderColor(Color.Gold1);
 
@@ -152,7 +153,7 @@ internal class UserInterface
         table.AddColumn("[DarkOrange]End Time[/]");
         table.AddColumn("[DarkOrange]Duration[/]");
 
-        foreach (CodingSessionModel codingSession in filteredCodingSessions)
+        foreach (CodingSessionModel codingSession in codingSessions)
         {
             table.AddRow(
                 $"[yellow]{codingSession.id.ToString()}[/]",
@@ -221,9 +222,13 @@ internal class UserInterface
 
     private void DisplayDeleteCodingSessionUI()
     {
+        FilterChoice filterChoice = AskFilter();
+        int periodNum = AskPeriodNum(filterChoice);
+        OrderChoice orderChoice = AskOrder();
+
         while (true)
         {
-            DisplayCodingSessionsTable();
+            DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
 
             string idToDelete = UserInput.GetUserIDInput("delete");
             var verificationResult = Verification.VerifyId(idToDelete);
@@ -248,9 +253,13 @@ internal class UserInterface
 
     private void DisplayUpdateCodingSessionUI()
     {
+        FilterChoice filterChoice = AskFilter();
+        int periodNum = AskPeriodNum(filterChoice);
+        OrderChoice orderChoice = AskOrder();
+
         while (true)
         {
-            DisplayCodingSessionsTable();
+            DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
 
             string idToUpdate = UserInput.GetUserIDInput("update");
             var verificationResult = Verification.VerifyId(idToUpdate);
