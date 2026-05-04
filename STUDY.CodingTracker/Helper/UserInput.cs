@@ -17,7 +17,7 @@ internal static class UserInput
         return idInput;
     }
 
-    public static string GetUserFilterPeriod(string filterChoice)
+    public static string GetUserFilterPeriod(FilterChoice filterChoice)
     {
         Console.Clear();
 

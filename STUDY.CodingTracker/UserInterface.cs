@@ -77,35 +77,38 @@ internal class UserInterface
 
         Console.Clear();
 
-        string filterChoice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
+        FilterChoice filterChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<FilterChoice>()
             .Title("Please select one of the filter:")
-            .AddChoices("week", "day", "year", "none")
+            .AddChoices(Enum.GetValues<FilterChoice>())
         );
 
         while (true)
         {
-            if (filterChoice != "none")
+            if (filterChoice != FilterChoice.None)
+            {
                 userInput = UserInput.GetUserFilterPeriod(filterChoice);
+            }
+            else
+            {
+                DisplayCodingSessionsTable();
+                return;
+            }
 
             switch (filterChoice)
             {
-                case "week":
+                case FilterChoice.Week:
                     validationResult = Verification.VerifyWeek(userInput);
                     break;
-                case "day":
+                case FilterChoice.Day:
                     validationResult = Verification.VerifyDay(userInput);
                     break;
-                case "year":
+                case FilterChoice.Year:
                     validationResult = Verification.VerifyYear(userInput);
                     break;
             }
 
-            if (filterChoice == "none")
-            {
-                DisplayCodingSessionsTable();
-            }
-            else if (validationResult.correct)
+            if (validationResult.correct)
             {
                 DisplayCodingSessionsTable(filterChoice, validationResult.periodNum);
                 return;
@@ -118,25 +121,26 @@ internal class UserInterface
         }
     }
 
-    private void DisplayCodingSessionsTable(string filterChoice = "none", int periodNumber = 0)
+    private void DisplayCodingSessionsTable(FilterChoice filterChoice = FilterChoice.None, int periodNumber = 0)
     {
         Console.Clear();
 
         var codingSessions = _codingSessionController.GetCodingSessions();
         List<CodingSessionModel> filteredCodingSessions = new List<CodingSessionModel>();
         System.Globalization.Calendar myCal = CultureInfo.InvariantCulture.Calendar;
+
         switch (filterChoice)
         {
-            case "week":
+            case FilterChoice.Week:
                 filteredCodingSessions = codingSessions.FindAll(c => ISOWeek.GetWeekOfYear(c.startTime) == periodNumber);
                 break;
-            case "day":
+            case FilterChoice.Day:
                 filteredCodingSessions = codingSessions.FindAll(c => c.startTime.Day == periodNumber);
                 break;
-            case "year":
+            case FilterChoice.Year:
                 filteredCodingSessions = codingSessions.FindAll(c => c.startTime.Year == periodNumber);
                 break;
-            case "none":
+            case FilterChoice.None:
                 filteredCodingSessions = codingSessions;
                 break;
         }
@@ -163,13 +167,13 @@ internal class UserInterface
 
     private void AskUserStopwatchChoice()
     {
-        string choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
+        StopwatchChoice choice = AnsiConsole.Prompt(
+            new SelectionPrompt<StopwatchChoice>()
             .Title("Do you wish to use the stopwatch?")
-            .AddChoices("Yes", "No")
+            .AddChoices(Enum.GetValues<StopwatchChoice>())
             );
 
-        if (choice == "Yes")
+        if (choice == StopwatchChoice.Yes)
             ManageStopWatch();
         else
             DisplayManualAddingCodingSessionUI();

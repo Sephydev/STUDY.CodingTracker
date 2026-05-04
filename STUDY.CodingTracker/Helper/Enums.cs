@@ -8,3 +8,17 @@ public enum MainMenuChoice
     UpdateCodingSession,
     Exit
 }
+
+public enum FilterChoice
+{
+    Week,
+    Day,
+    Year,
+    None
+}
+
+public enum StopwatchChoice
+{
+    Yes,
+    No
+}
