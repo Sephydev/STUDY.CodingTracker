@@ -27,12 +27,12 @@ Console based CRUD application to track occurrences of different coding sessions
     -- The program uses a SQLite DB connection to store and read information.
     -- If no database exists, or the correct table does not exist, it will be created on program start.
   - A console based UI where users can navigate by entering options.
-  ![Main menu](./ReadMeAsset/MainMenu.png)
+  ![Main menu](./ReadMeAssets/MainMenu.png)
   - CRUD DB functions
     -- From the main menu users can Create, Read, Update or Delete entries for whichever coding session they want. They need to enter the starting date and hour and the ending date and hour (format : dd-MMM-yyyy hh:MM).
     -- User input are automatically checked to make sure they are in the correct and realistic format.
   - Registered Habit output.  
-  ![Coding Sessions Display](./ReadMeAsset/CodingSessionsDisplay.png)
+  ![Coding Sessions Display](./ReadMeAssets/CodingSessionsDisplay.png)
 
 ## How to run it
 
