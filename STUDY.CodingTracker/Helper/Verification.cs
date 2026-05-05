@@ -2,7 +2,7 @@
 
 namespace STUDY.CodingTracker.Helper;
 
-internal static class Verification
+public static class Verification
 {
     public static (bool correct, DateTime date) VerifyDate(string dateInput)
     {
