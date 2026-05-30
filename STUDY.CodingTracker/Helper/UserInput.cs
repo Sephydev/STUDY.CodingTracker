@@ -21,7 +21,7 @@ internal static class UserInput
     {
         Console.Clear();
 
-        string periodInput = AnsiConsole.Ask<string>($"Please enter the {filterChoice} number you want the coding sessions displayed be filtered on:");
+        string periodInput = AnsiConsole.Ask<string>($"Please enter the {filterChoice} number you want the coding sessions displayed be filtered on (Enter -1 to return to the main menu):");
 
         return periodInput;
     }

@@ -33,8 +33,13 @@ internal class UserInterface
             {
                 case MainMenuChoice.ViewCodingSessions:
                     FilterChoice filterChoice = AskFilter();
+                    if (filterChoice == FilterChoice.Return) break;
+
                     int periodNum = AskPeriodNum(filterChoice);
+                    if (periodNum == -1) break;
+
                     OrderChoice orderChoice = AskOrder();
+                    if (orderChoice == OrderChoice.ReturnToMainMenu) break;
 
                     DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
                     DisplayPressKeyToContinue();
@@ -103,6 +108,8 @@ internal class UserInterface
             {
                 return periodNum;
             }
+
+            if (userInput == "-1") return Convert.ToInt32(userInput);
 
             switch (filterChoice)
             {
