@@ -21,7 +21,8 @@ public enum FilterChoice
 public enum StopwatchChoice
 {
     Yes,
-    No
+    No,
+    Return
 }
 
 public enum OrderChoice

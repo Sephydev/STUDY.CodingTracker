@@ -4,6 +4,7 @@ using STUDY.CodingTracker.Controllers;
 using STUDY.CodingTracker.Helper;
 using STUDY.CodingTracker.Models;
 using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace STUDY.CodingTracker;
 
@@ -46,7 +47,7 @@ internal class UserInterface
                     break;
                 case MainMenuChoice.AddCodingSession:
                     AskUserStopwatchChoice();
-                    DisplayPressKeyToContinue();
+                    
                     break;
                 case MainMenuChoice.DeleteCodingSession:
                     DisplayDeleteCodingSessionUI();
@@ -183,8 +184,12 @@ internal class UserInterface
 
         if (choice == StopwatchChoice.Yes)
             ManageStopWatch();
-        else
+        else if (choice == StopwatchChoice.No)
             DisplayManualAddingCodingSessionUI();
+        else
+            return;
+
+        DisplayPressKeyToContinue();
     }
 
     private void ManageStopWatch()
@@ -210,6 +215,8 @@ internal class UserInterface
         bool success;
 
         CodingSessionModel newCodingSession = CreateCodingSession();
+
+        if (newCodingSession.startTime == new DateTime(0)) return;
 
         success = _codingSessionController.AddCodingSession(newCodingSession);
 
@@ -302,8 +309,12 @@ internal class UserInterface
         while (true)
         {
             Console.Clear();
+            DateTime dateReturn = new DateTime(0);
+            DateTime.TryParseExact("0/0/0 0:0", "dd/MM/yyyy HH:mm", new CultureInfo("en-US"), DateTimeStyles.None, out dateReturn);
+            CodingSessionModel codingSessionReturn = new CodingSessionModel(dateReturn, dateReturn);
 
             string startTime = UserInput.GetUserDateInput("start");
+            if (startTime == "-1") return codingSessionReturn; 
             var verificationResultStartTime = Verification.VerifyDate(startTime);
 
             if (!verificationResultStartTime.correct)
@@ -313,6 +324,7 @@ internal class UserInterface
             }
 
             string endTime = UserInput.GetUserDateInput("end");
+            if (endTime == "-1") return codingSessionReturn;
             var verificationResultEndTime = Verification.VerifyEndDate(endTime, verificationResultStartTime.date);
 
             if (!verificationResultEndTime.correct)
@@ -321,8 +333,7 @@ internal class UserInterface
                 continue;
             }
 
-            CodingSessionModel newCodingSession = new CodingSessionModel(verificationResultStartTime.date, verificationResultEndTime.date);
-
+            CodingSessionModel newCodingSession = new CodingSessionModel(verificationResultStartTime.date, verificationResultEndTime.date);;
             return newCodingSession;
         }
     }
