@@ -273,14 +273,20 @@ internal class UserInterface
     private void DisplayUpdateCodingSessionUI()
     {
         FilterChoice filterChoice = AskFilter();
+        if (filterChoice == FilterChoice.Return) return;
+
         int periodNum = AskPeriodNum(filterChoice);
+        if (periodNum == -1) return;
+
         OrderChoice orderChoice = AskOrder();
+        if (orderChoice == OrderChoice.ReturnToMainMenu) return;
 
         while (true)
         {
             DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
 
             string idToUpdate = UserInput.GetUserIDInput("update");
+            if (idToUpdate == "-1") return;
             var verificationResult = Verification.VerifyId(idToUpdate);
 
             if (!verificationResult.correct)
@@ -290,6 +296,8 @@ internal class UserInterface
             }
 
             CodingSessionModel updatedCodingSession = CreateCodingSession();
+
+            if (updatedCodingSession.startTime == new DateTime(0)) return;
 
             int numberOfRows = _codingSessionController.UpdateCodingSession(verificationResult.id, updatedCodingSession);
 
