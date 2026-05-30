@@ -47,11 +47,9 @@ internal class UserInterface
                     break;
                 case MainMenuChoice.AddCodingSession:
                     AskUserStopwatchChoice();
-                    
                     break;
                 case MainMenuChoice.DeleteCodingSession:
                     DisplayDeleteCodingSessionUI();
-                    DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.UpdateCodingSession:
                     DisplayUpdateCodingSessionUI();
@@ -237,14 +235,21 @@ internal class UserInterface
     private void DisplayDeleteCodingSessionUI()
     {
         FilterChoice filterChoice = AskFilter();
+        if (filterChoice == FilterChoice.Return) return;
+
         int periodNum = AskPeriodNum(filterChoice);
+        if (periodNum == -1) return;
+
         OrderChoice orderChoice = AskOrder();
+        if (orderChoice == OrderChoice.ReturnToMainMenu) return;
 
         while (true)
         {
             DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
 
             string idToDelete = UserInput.GetUserIDInput("delete");
+            if (idToDelete == "-1") return;
+
             var verificationResult = Verification.VerifyId(idToDelete);
 
             if (!verificationResult.correct)
