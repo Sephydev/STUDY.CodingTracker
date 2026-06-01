@@ -96,8 +96,8 @@ internal class UserInterface
         while (true)
         {
             string userInput = "";
-            int periodNum = 0;
-            (bool correct, int periodNum) validationResult = (false, 0);
+            int periodDate = 0;
+            (bool correct, DateTime periodDate) validationResult = (false, new DateTime(0));
 
             if (filterChoice != FilterChoice.None)
             {
@@ -105,31 +105,31 @@ internal class UserInterface
             }
             else
             {
-                return periodNum;
+                return periodDate;
             }
 
             if (userInput == "-1") return Convert.ToInt32(userInput);
 
-            switch (filterChoice)
-            {
-                case FilterChoice.Week:
-                    validationResult = Verification.VerifyWeek(userInput);
-                    break;
-                case FilterChoice.Day:
-                    validationResult = Verification.VerifyDay(userInput);
-                    break;
-                case FilterChoice.Year:
-                    validationResult = Verification.VerifyYear(userInput);
-                    break;
-            }
+            validationResult = Verification.VerifyPeriodDate(userInput);
 
             if (validationResult.correct)
             {
-                return validationResult.periodNum;
+                switch (filterChoice)
+                {
+                    case FilterChoice.Week:
+                        //validationResult = Verification.VerifyWeek(userInput);
+                        return ISOWeek.GetWeekOfYear(validationResult.periodDate);
+                    case FilterChoice.Day:
+                        //validationResult = Verification.VerifyDay(userInput);
+                        return validationResult.periodDate.Day;
+                    case FilterChoice.Year:
+                        //validationResult = Verification.VerifyYear(userInput);
+                        return validationResult.periodDate.Year;
+                }
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Please enter a correct number based on the period you've chosen.[/]");
+                AnsiConsole.MarkupLine("[red]Please enter a correct date based on the period you've chosen. (Format : dd/MM/yyyy)[/]");
                 DisplayPressKeyToContinue();
             }
         }
