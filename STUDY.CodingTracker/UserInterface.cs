@@ -36,13 +36,13 @@ internal class UserInterface
                     FilterChoice filterChoice = AskFilter();
                     if (filterChoice == FilterChoice.Return) break;
 
-                    int periodNum = AskPeriodNum(filterChoice);
-                    if (periodNum == -1) break;
+                    DateTime periodDate = AskPeriodDate(filterChoice);
+                    if (periodDate == new DateTime(1)) break;
 
                     OrderChoice orderChoice = AskOrder();
                     if (orderChoice == OrderChoice.ReturnToMainMenu) break;
 
-                    DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
+                    DisplayCodingSessionsTable(filterChoice, periodDate, orderChoice);
                     DisplayPressKeyToContinue();
                     break;
                 case MainMenuChoice.AddCodingSession:
@@ -91,12 +91,12 @@ internal class UserInterface
         return filterChoice;
     }
 
-    private int AskPeriodNum(FilterChoice filterChoice)
+    private DateTime AskPeriodDate(FilterChoice filterChoice)
     {
         while (true)
         {
             string userInput = "";
-            int periodDate = 0;
+            DateTime periodDate = new DateTime(0);
             (bool correct, DateTime periodDate) validationResult = (false, new DateTime(0));
 
             if (filterChoice != FilterChoice.None)
@@ -108,24 +108,13 @@ internal class UserInterface
                 return periodDate;
             }
 
-            if (userInput == "-1") return Convert.ToInt32(userInput);
+            if (userInput == "-1") return new DateTime(1);
 
             validationResult = Verification.VerifyPeriodDate(userInput);
 
             if (validationResult.correct)
             {
-                switch (filterChoice)
-                {
-                    case FilterChoice.Week:
-                        //validationResult = Verification.VerifyWeek(userInput);
-                        return ISOWeek.GetWeekOfYear(validationResult.periodDate);
-                    case FilterChoice.Day:
-                        //validationResult = Verification.VerifyDay(userInput);
-                        return validationResult.periodDate.Day;
-                    case FilterChoice.Year:
-                        //validationResult = Verification.VerifyYear(userInput);
-                        return validationResult.periodDate.Year;
-                }
+                return validationResult.periodDate;
             }
             else
             {
@@ -146,11 +135,11 @@ internal class UserInterface
         return orderChoice;
     }
 
-    private void DisplayCodingSessionsTable(FilterChoice filterChoice, int periodNum, OrderChoice orderChoice)
+    private void DisplayCodingSessionsTable(FilterChoice filterChoice, DateTime periodDate, OrderChoice orderChoice)
     {
         Console.Clear();
 
-        var codingSessions = _codingSessionController.GetCodingSessions(filterChoice, periodNum, orderChoice);
+        var codingSessions = _codingSessionController.GetCodingSessions(filterChoice, periodDate, orderChoice);
 
         var table = new Table().RoundedBorder().BorderColor(Color.Gold1);
 
@@ -237,15 +226,15 @@ internal class UserInterface
         FilterChoice filterChoice = AskFilter();
         if (filterChoice == FilterChoice.Return) return;
 
-        int periodNum = AskPeriodNum(filterChoice);
-        if (periodNum == -1) return;
+        DateTime periodDate = AskPeriodDate(filterChoice);
+        if (periodDate == new DateTime(1)) return;
 
         OrderChoice orderChoice = AskOrder();
         if (orderChoice == OrderChoice.ReturnToMainMenu) return;
 
         while (true)
         {
-            DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
+            DisplayCodingSessionsTable(filterChoice, periodDate, orderChoice);
 
             string idToDelete = UserInput.GetUserIDInput("delete");
             if (idToDelete == "-1") return;
@@ -275,15 +264,15 @@ internal class UserInterface
         FilterChoice filterChoice = AskFilter();
         if (filterChoice == FilterChoice.Return) return;
 
-        int periodNum = AskPeriodNum(filterChoice);
-        if (periodNum == -1) return;
+        DateTime periodDate = AskPeriodDate(filterChoice);
+        if (periodDate == new DateTime(1)) return;
 
         OrderChoice orderChoice = AskOrder();
         if (orderChoice == OrderChoice.ReturnToMainMenu) return;
 
         while (true)
         {
-            DisplayCodingSessionsTable(filterChoice, periodNum, orderChoice);
+            DisplayCodingSessionsTable(filterChoice, periodDate, orderChoice);
 
             string idToUpdate = UserInput.GetUserIDInput("update");
             if (idToUpdate == "-1") return;
